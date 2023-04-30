@@ -1,4 +1,4 @@
-package main.java;
+package main.java.section2;
 
 import java.util.List;
 

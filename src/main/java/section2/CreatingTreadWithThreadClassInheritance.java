@@ -1,4 +1,4 @@
-package main.java;
+package main.java.section2;
 
 public class CreatingTreadWithThreadClassInheritance {
     public static void main(String[] args) {

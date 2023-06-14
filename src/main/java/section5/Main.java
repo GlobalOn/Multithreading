@@ -1,4 +1,5 @@
 package main.java.section5;
+
 /**
  * Resource Sharing & Introduction to Critical Sections
  * In this section we can see, how NOT atomic operations (like ++ or --) without any synchronization and wrong
@@ -14,14 +15,19 @@ public class Main {
         InventoryCounter inventoryCounter = new InventoryCounter();
         IncrementingThread incrementingThread = new IncrementingThread(inventoryCounter);
         DecrementingThread decrementingThread = new DecrementingThread(inventoryCounter);
+        long x = System.nanoTime();
 
         incrementingThread.start();
         decrementingThread.start();
 
-        incrementingThread.join();
-        decrementingThread.join();
+        //      incrementingThread.join();
+        //      decrementingThread.join();
+        int mainThreadSleepTime = 5;
+        Thread.sleep(mainThreadSleepTime);
+        System.out.println(System.nanoTime() - x - mainThreadSleepTime * 1000000);
 
         System.out.println("We currently have " + inventoryCounter.getItems() + " items");
+
     }
 
     public static class DecrementingThread extends Thread {
@@ -34,14 +40,15 @@ public class Main {
 
         @Override
         public void run() {
-            for (int i = 0; i < 10000; i++) {
-                inventoryCounter.decrement();
+            synchronized (inventoryCounter) {
+                for (int i = 0; i < 10000; i++) {
+                    inventoryCounter.decrement();
+                }
             }
         }
     }
 
     public static class IncrementingThread extends Thread {
-
         private InventoryCounter inventoryCounter;
 
         public IncrementingThread(InventoryCounter inventoryCounter) {
@@ -50,8 +57,10 @@ public class Main {
 
         @Override
         public void run() {
-            for (int i = 0; i < 10000; i++) {
-                inventoryCounter.increment();
+            synchronized (inventoryCounter) {
+                for (int i = 0; i < 10000; i++) {
+                    inventoryCounter.increment();
+                }
             }
         }
     }
